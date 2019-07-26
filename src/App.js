@@ -21,7 +21,8 @@ class App extends Component {
       ]
     ],
     total: '00:00',
-    choice: 0
+    choice: 0,
+    test: '00:00'
   }
 
   add = () => {
@@ -43,9 +44,16 @@ class App extends Component {
     this.setState(state)
   }
 
-  valueChange = (event, index, valueIndex) => {
+  valueChange = (value, index, valueIndex) => {
+
+
+    console.log('event.target.value', value)
     const list = Array.from(this.state.list)
-    list[index][valueIndex] = event.target.value
+    const valArray = Array.from(list[index])
+    valArray[valueIndex] = value
+
+
+    list[index] = valArray
 
     if (index !== 0) {
       const dataTo = moment(`2000-01-01 ${list[index][1]}`)
@@ -115,7 +123,7 @@ class App extends Component {
       }
       newArr2.push(arr[i])
     }
-    state.list = newArr
+    state.list.push(newArr)
     this.setState(state)
   }
 
@@ -194,8 +202,16 @@ class App extends Component {
     pdfMake.createPdf(docDefinition).download();
   };
 
+
+  test = (e) => {
+
+    this.setState({
+      test: e.target.value
+    })
+  }
+
   render() {
-    console.log('',this.state)
+    console.log('', this.state)
     return (
       <AppContainer>
         <AddButton onClick={this.add}>追加</AddButton>
@@ -217,22 +233,26 @@ class App extends Component {
             items = (
               <Grid key={index} index={index === this.state.choice}>
                 <GridItem>
-                  <TimeInput type='date' value={value[0]} onChange={(event) => this.valueChange(event, index, 0)}/>
+                  <TimeInput type='date' value={value[0]}
+                             onChange={(event) => this.valueChange(event.target.value, index, 0)}/>
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[1]} onChange={(event) => this.valueChange(event, index, 1)}/>
+                  <TimeInput type='time' value={value[1]}
+                             onChange={(event) => this.valueChange(event.target.value, index, 1)}/>
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[2]} onChange={(event) => this.valueChange(event, index, 2)}/>
+                  <TimeInput type='time' value={value[2]}
+                             onChange={(event) => this.valueChange(event.target.value, index, 2)}/>
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[3]} onChange={(event) => this.valueChange(event, index, 3)}/>
+                  <TimeInput type='time' value={value[3]}
+                             onChange={(event) => this.valueChange(event.target.value, index, 3)}/>
                 </GridItem>
                 <GridItem>
                   <TimeInput value={value[4]} disabled='disabled'/>
                 </GridItem>
                 <GridItem>
-                  <TimeInput value={value[5]} onChange={(event) => this.valueChange(event, index, 5)}/>
+                  <TimeInput value={value[5]} onChange={(event) => this.valueChange(event.target.value, index, 5)}/>
                 </GridItem>
                 <GridItem>
                   <button onClick={() => this.delete(index)}>delete</button>
@@ -248,6 +268,8 @@ class App extends Component {
         <button onClick={this.download}>ダウンロード</button>
         <button onClick={this.save}>保存</button>
         <button onClick={this.reed}>読み込み</button>
+
+        <TimeInput type='time' value={this.state.test} onChange={(event) => this.test(event)}/>
       </AppContainer>
     )
   }
