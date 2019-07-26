@@ -6,7 +6,7 @@ export const Grid = (props) => {
   const G = styled('div')({
     display: 'grid',
     gridTemplateColumns: '150px 150px 150px 150px 150px 150px 150px',
-    gridTemplateRows: '30px',
+    gridTemplateRows: '25px',
     backgroundColor: props.index === true ? '#bfbfbf' : '#fff'
   })
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { AddButton, AppContainer, Grid, GridItem, TimeInput } from './component'
 import moment from 'moment';
+import { AddButton, AppContainer, Grid, GridItem, TimeInput, ButtonBox ,BaseButton} from './component'
 import { inkan } from './inkan';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -21,8 +21,7 @@ class App extends Component {
       ]
     ],
     total: '00:00',
-    choice: 0,
-    test: '00:00'
+    choice: 0
   }
 
   add = () => {
@@ -45,15 +44,8 @@ class App extends Component {
   }
 
   valueChange = (value, index, valueIndex) => {
-
-
-    console.log('event.target.value', value)
-    const list = Array.from(this.state.list)
-    const valArray = Array.from(list[index])
-    valArray[valueIndex] = value
-
-
-    list[index] = valArray
+    const list = this.state.list.slice()
+    list[index][valueIndex] = value
 
     if (index !== 0) {
       const dataTo = moment(`2000-01-01 ${list[index][1]}`)
@@ -116,14 +108,14 @@ class App extends Component {
     let newArr2 = []
     let i2 = 0
     for (let i = 0; i < arr.length; i++) {
-      if (i !== 0 && (i % 6) === 0) {
+      if ((i % 6) === 0) {
         newArr[i2] = newArr2
         i2++
         newArr2 = []
       }
       newArr2.push(arr[i])
     }
-    state.list.push(newArr)
+    state.list = newArr
     this.setState(state)
   }
 
@@ -139,7 +131,7 @@ class App extends Component {
     const docDefinition = {
       content: [
         {
-          text: '年月作業報告書',
+          text: '2019年7月 作業報告書',
           margin: [2, 0, 0, 10],
           fontSize: 15,
         },
@@ -202,18 +194,10 @@ class App extends Component {
     pdfMake.createPdf(docDefinition).download();
   };
 
-
-  test = (e) => {
-
-    this.setState({
-      test: e.target.value
-    })
-  }
-
   render() {
-    console.log('', this.state)
     return (
       <AppContainer>
+        稼働調整したところ（お休み、遅刻早退など）はわかるように備考に記載
         <AddButton onClick={this.add}>追加</AddButton>
         {this.state.list.map((value, index) => {
           let items = []
@@ -233,26 +217,59 @@ class App extends Component {
             items = (
               <Grid key={index} index={index === this.state.choice}>
                 <GridItem>
-                  <TimeInput type='date' value={value[0]}
-                             onChange={(event) => this.valueChange(event.target.value, index, 0)}/>
+                  <TimeInput
+                    type='date'
+                    timeValue={value[0]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={0}
+                  />
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[1]}
-                             onChange={(event) => this.valueChange(event.target.value, index, 1)}/>
+                  <TimeInput
+                    type='time'
+                    timeValue={value[1]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={1}
+                  />
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[2]}
-                             onChange={(event) => this.valueChange(event.target.value, index, 2)}/>
+                  <TimeInput
+                    type='time'
+                    timeValue={value[2]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={2}
+                  />
                 </GridItem>
                 <GridItem>
-                  <TimeInput type='time' value={value[3]}
-                             onChange={(event) => this.valueChange(event.target.value, index, 3)}/>
+                  <TimeInput
+                    type='time'
+                    timeValue={value[3]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={3}
+                  />
                 </GridItem>
                 <GridItem>
-                  <TimeInput value={value[4]} disabled='disabled'/>
+                  <TimeInput
+                    type='time'
+                    timeValue={value[4]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={4}
+                    disabled={true}
+                  />
                 </GridItem>
                 <GridItem>
-                  <TimeInput value={value[5]} onChange={(event) => this.valueChange(event.target.value, index, 5)}/>
+                  <TimeInput
+                    type='text'
+                    timeValue={value[5]}
+                    changeState={this.valueChange}
+                    index={index}
+                    valueIndex={5}
+                  />
                 </GridItem>
                 <GridItem>
                   <button onClick={() => this.delete(index)}>delete</button>
@@ -264,12 +281,12 @@ class App extends Component {
           return items
 
         })}
-        <div>{this.state.total}</div>
-        <button onClick={this.download}>ダウンロード</button>
-        <button onClick={this.save}>保存</button>
-        <button onClick={this.reed}>読み込み</button>
-
-        <TimeInput type='time' value={this.state.test} onChange={(event) => this.test(event)}/>
+        <div>　稼働時間 {this.state.total}</div>
+        <ButtonBox>
+          <BaseButton onClick={this.download}>ダウンロード</BaseButton>
+          <BaseButton onClick={this.save}>保存</BaseButton>
+          <BaseButton onClick={this.reed}>読み込み</BaseButton>
+        </ButtonBox>
       </AppContainer>
     )
   }
