@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import moment from 'moment';
-import { AddButton, AppContainer, Grid, GridItem, TimeInput, ButtonBox ,BaseButton} from './component'
+import { AddButton, AppContainer, Grid, GridItem, TimeInput, ButtonBox, BaseButton } from './component'
 import { inkan } from './inkan';
+import { Add, Delete, ChangeValue, Save, Reed } from './functions'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -22,101 +22,6 @@ class App extends Component {
     ],
     total: '00:00',
     choice: 0
-  }
-
-  add = () => {
-    const state = Object.assign({}, this.state)
-    state.list.push([
-      moment(new Date()).format('YYYY-MM-DD'),
-      '10:00',
-      '19:00',
-      '01:00',
-      '08:00',
-      ''
-    ])
-    this.setState(state)
-  }
-
-  delete = (index) => {
-    const state = Object.assign({}, this.state)
-    state.list.splice(index, 1)
-    this.setState(state)
-  }
-
-  valueChange = (value, index, valueIndex) => {
-    const list = this.state.list.slice()
-    list[index][valueIndex] = value
-
-    if (index !== 0) {
-      const dataTo = moment(`2000-01-01 ${list[index][1]}`)
-      const dataFrom = moment(`2000-01-01 ${list[index][2]}`)
-      const diff = moment(dataFrom.diff(dataTo))
-      // 時差 休憩時間を引く
-      list[index][4] = diff.subtract(10, 'hour').format('HH:mm')
-    }
-    const total = this.total(Array.from(list))
-    this.setState({
-      list: list,
-      choice: index,
-      total: total
-    })
-  }
-
-  total = (list) => {
-    let hour = 0
-    let minute = 0
-
-    for (let i = 0; i < list.length; i++) {
-      if (i !== 0) {
-        const h = Number(moment(`2000-01-01 ${list[i][4]}`).format('H'))
-        const m = Number(moment(`2000-01-01 ${list[i][4]}`).format('mm'))
-
-        hour += h
-        minute += m
-      }
-    }
-
-    hour += Math.floor(minute / 60);
-    let min = minute % 60;
-    let stringMin = ''
-    if (String(min).length === 1) {
-      stringMin = `0${min}`
-    } else {
-      stringMin = min
-    }
-
-    return `${hour}: ${stringMin}`
-  }
-
-  save = () => {
-    const state = Object.assign({}, this.state)
-    const arr = []
-    for (let i = 0; i < state.list.length; i++) {
-      if (i !== 0) {
-        arr.push(Array.from(state.list[i]))
-      }
-    }
-    localStorage.setItem('OperatingTime', arr.toString());
-  }
-
-  reed = () => {
-    const state = Object.assign({}, this.state)
-
-    const str = localStorage.getItem('OperatingTime');
-    let arr = str.split(',')
-    let newArr = []
-    let newArr2 = []
-    let i2 = 0
-    for (let i = 0; i < arr.length; i++) {
-      if ((i % 6) === 0) {
-        newArr[i2] = newArr2
-        i2++
-        newArr2 = []
-      }
-      newArr2.push(arr[i])
-    }
-    state.list = newArr
-    this.setState(state)
   }
 
   download = () => {
@@ -198,7 +103,7 @@ class App extends Component {
     return (
       <AppContainer>
         稼働調整したところ（お休み、遅刻早退など）はわかるように備考に記載
-        <AddButton onClick={this.add}>追加</AddButton>
+        <AddButton onClick={() => Add(this)}>追加</AddButton>
         {this.state.list.map((value, index) => {
           let items = []
           if (index === 0) {
@@ -218,45 +123,50 @@ class App extends Component {
               <Grid key={index} index={index === this.state.choice}>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='date'
                     timeValue={value[0]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={0}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='time'
                     timeValue={value[1]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={1}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='time'
                     timeValue={value[2]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={2}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='time'
                     timeValue={value[3]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={3}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='time'
                     timeValue={value[4]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={4}
                     disabled={true}
@@ -264,15 +174,16 @@ class App extends Component {
                 </GridItem>
                 <GridItem>
                   <TimeInput
+                    This={this}
                     type='text'
                     timeValue={value[5]}
-                    changeState={this.valueChange}
+                    changeState={ChangeValue}
                     index={index}
                     valueIndex={5}
                   />
                 </GridItem>
                 <GridItem>
-                  <button onClick={() => this.delete(index)}>delete</button>
+                  <button onClick={() => Delete(this, index)}>delete</button>
                 </GridItem>
               </Grid>
             )
@@ -281,11 +192,11 @@ class App extends Component {
           return items
 
         })}
-        <div>　稼働時間 {this.state.total}</div>
+        <div> 稼働時間 {this.state.total}</div>
         <ButtonBox>
           <BaseButton onClick={this.download}>ダウンロード</BaseButton>
-          <BaseButton onClick={this.save}>保存</BaseButton>
-          <BaseButton onClick={this.reed}>読み込み</BaseButton>
+          <BaseButton onClick={() => Save(Array.from(this.state.list))}>保存</BaseButton>
+          <BaseButton onClick={() => Reed(this, Array.from(this.state.list))}>読み込み</BaseButton>
         </ButtonBox>
       </AppContainer>
     )

@@ -1,21 +1,9 @@
-##npm i
-
-##gulpのインストール グローバルへ
-
-###cd node_modules/pdfmake
-
-###mkdir -p examples/fonts
-
-###ルートに戻る
-
-###cd ../../ 
-
-###fontsの中のものをコピー
-
-###cp fonts/*.ttf node_modules/pdfmake/examples/fonts/
-
-###cd node_modules/pdfmake
-
-###yarn install
-
-###gulp buildFonts
+#パッケージのインストール
+`npm install`
+#日本語対応
+- gulpをインストール グローバルへ `npm install -g gulp`
+- pdfmakeに移動 `cd node_modules/pdfmake`
+- ディレクトリ作成 `mkdir -p examples/fonts`
+- fontsの中のものをコピー `cp ../../fonts/*.ttf node_modules/pdfmake/examples/fonts/`
+- インストール `yarn install`
+- `gulp buildFonts`

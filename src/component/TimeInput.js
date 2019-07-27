@@ -15,6 +15,7 @@ export const BaseInput = styled('input')({
 export const TimeInput = React.memo((props) => {
 
   const {
+    This,
     type,
     changeState,
     timeValue,
@@ -29,9 +30,9 @@ export const TimeInput = React.memo((props) => {
     <BaseInput
       type={type}
       value={time}
-      disabled={disabled ? true : false}
+      disabled={!!disabled}
       onChange={(event) => setTime(event.target.value)}
-      onBlur={(event) => changeState(event.target.value, index, valueIndex)}
+      onBlur={(event) => changeState(This,event.target.value, index, valueIndex)}
     />
   )
 })
