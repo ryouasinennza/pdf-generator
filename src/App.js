@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { AddButton, AppContainer, Grid, GridItem, TimeInput, ButtonBox, BaseButton } from './component'
+import moment from 'moment';
 import { inkan } from './inkan';
-import { Add, Delete, ChangeValue, Save, Reed } from './functions'
+import {
+  AppContainer,
+  Grid,
+  GridItem,
+  TimeInput,
+  ButtonBox,
+  OutLineTextFiled,
+  OutLineButton,
+  DeleteButton
+} from './component'
+
+import {
+  Add,
+  Delete,
+  ChangeValue,
+  Save, Reed,
+  Download
+} from './functions'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -20,170 +37,149 @@ class App extends Component {
         {text: '備考',},
       ]
     ],
+    name: 'name',
+    company: 'EBA 株式会社',
+    date: moment(new Date()).format('YYYY年MM月'),
     total: '00:00',
     choice: 0
   }
 
-  download = () => {
-
-    pdfMake.fonts = {
-      GenYoMin: {
-        normal: 'GenYoMinJP-Regular.ttf',
-        bold: 'GenYoMinJP-Bold.ttf',
-      },
-    };
-
-    const docDefinition = {
-      content: [
-        {
-          text: '2019年7月 作業報告書',
-          margin: [2, 0, 0, 10],
-          fontSize: 15,
-        },
-        {
-          columns: [
-            {
-              width: 150,
-              height: 30,
-              margin: [2, 0, 0, 10],
-              text: 'EBA 株式会社  池田 秀春',
-            },
-            {
-              image: inkan,
-              width: 20,
-              height: 20,
-              margin: [2, 0, 0, 10]
-            },
-          ]
-        },
-        {
-          text: '下記の通り作業した事をご報告します。',
-          margin: [2, 0, 0, 5]
-        },
-        {
-          style: 'table',
-          table: {
-            widths: ['*', '*', '*', '*', '*', '*'],
-            headerRows: 1,
-            body: this.state.list
-          },
-          layout: {
-            fillColor: function (rowIndex, node, columnIndex) {
-              return (rowIndex % 2 === 0) ? '#CCCCCC' : null;
-            }
-          }
-        },
-        {
-          style: 'table2',
-          table: {
-            widths: [50, 50],
-            body: [
-              ['稼働合計', this.state.total],
-            ]
-          }
-        },
-      ],
-      styles: {
-        table: {
-          fontSize: 11,
-        },
-        table2: {
-          fontSize: 11,
-          margin: [0, 10, 0, 0]
-        },
-      },
-      defaultStyle: {
-        font: 'GenYoMin',
-      },
-    };
-    pdfMake.createPdf(docDefinition).download();
-  };
+  changeRequiredValue = (key, value) => {
+    this.setState({
+      [key]: value
+    })
+  }
 
   render() {
     return (
       <AppContainer>
-        稼働調整したところ（お休み、遅刻早退など）はわかるように備考に記載
-        <AddButton onClick={() => Add(this)}>追加</AddButton>
+        <ButtonBox>
+          <OutLineTextFiled
+            disabled={false}
+            label='Name'
+            type='text'
+            value={this.state.name}
+            onChange={this.changeRequiredValue}
+            changeKey='name'
+          />
+          <OutLineTextFiled
+            disabled={false}
+            label='Company'
+            type='text'
+            value={this.state.company}
+            onChange={this.changeRequiredValue}
+            changeKey='company'
+          />
+          <OutLineTextFiled
+            disabled={false}
+            label='Year and month'
+            type='text'
+            value={this.state.date}
+            onChange={this.changeRequiredValue}
+            changeKey='date'
+          />
+          <OutLineTextFiled
+            disabled={true}
+            label='Total Operating Time'
+            type='text'
+            value={this.state.total}
+            onChange={()=>console.log('Total')}
+            changeKey=''
+          />
+        </ButtonBox>
+        <ButtonBox>
+          <OutLineButton onClick={() => Download(
+            Array.from(this.state.list),
+            this.state.total,
+            this.state.name,
+            this.state.company,
+            this.state.date,
+            inkan,
+          )}>Download</OutLineButton>
+          <OutLineButton onClick={() => Save(Array.from(this.state.list))}>Save</OutLineButton>
+          <OutLineButton onClick={() => Reed(this, Array.from(this.state.list))}>Read</OutLineButton>
+          <OutLineButton onClick={() => Add(this)}>Add</OutLineButton>
+        </ButtonBox>
         {this.state.list.map((value, index) => {
           let items = []
           if (index === 0) {
             items = (
-              <Grid key={index}>
-                <GridItem>{value[0].text}</GridItem>
-                <GridItem>{value[1].text}</GridItem>
-                <GridItem>{value[2].text}</GridItem>
-                <GridItem>{value[3].text}</GridItem>
-                <GridItem>{value[4].text}</GridItem>
-                <GridItem>{value[5].text}</GridItem>
-                <GridItem>削除</GridItem>
+              <Grid key={index} focus={true}>
+                <GridItem>Date</GridItem>
+                <GridItem>Start</GridItem>
+                <GridItem>End</GridItem>
+                <GridItem>Break Time</GridItem>
+                <GridItem>Operating Time</GridItem>
+                <GridItem>Note</GridItem>
+                <GridItem>Delete</GridItem>
               </Grid>
             )
           } else {
             items = (
-              <Grid key={index} index={index === this.state.choice}>
+              <Grid key={index} focus={false}>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='date'
-                    timeValue={value[0]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={0}
+                    timeValue={value[0]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='time'
-                    timeValue={value[1]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={1}
+                    timeValue={value[1]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='time'
-                    timeValue={value[2]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={2}
+                    timeValue={value[2]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='time'
-                    timeValue={value[3]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={3}
+                    timeValue={value[3]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='time'
-                    timeValue={value[4]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={4}
                     disabled={true}
+                    timeValue={value[4]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
                   <TimeInput
                     This={this}
                     type='text'
-                    timeValue={value[5]}
-                    changeState={ChangeValue}
                     index={index}
                     valueIndex={5}
+                    timeValue={value[5]}
+                    changeState={ChangeValue}
                   />
                 </GridItem>
                 <GridItem>
-                  <button onClick={() => Delete(this, index)}>delete</button>
+                  <DeleteButton onClick={() => Delete(this, index)}>delete</DeleteButton>
                 </GridItem>
               </Grid>
             )
@@ -192,12 +188,9 @@ class App extends Component {
           return items
 
         })}
+
         <div> 稼働時間 {this.state.total}</div>
-        <ButtonBox>
-          <BaseButton onClick={this.download}>ダウンロード</BaseButton>
-          <BaseButton onClick={() => Save(Array.from(this.state.list))}>保存</BaseButton>
-          <BaseButton onClick={() => Reed(this, Array.from(this.state.list))}>読み込み</BaseButton>
-        </ButtonBox>
+
       </AppContainer>
     )
   }

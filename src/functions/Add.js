@@ -1,8 +1,8 @@
 import moment from 'moment';
+import {total} from './Total'
 
 export const Add = (This) => {
-  const state = Object.assign({}, This.state)
-  state.list = [
+  const list = [
     ...This.state.list,
     [
       moment(new Date()).format('YYYY-MM-DD'),
@@ -13,5 +13,8 @@ export const Add = (This) => {
       ''
     ]
   ]
-  This.setState(state)
+  This.setState({
+    list: list,
+    total: total(Array.from(list))
+  })
 }

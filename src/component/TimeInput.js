@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 
+const colors = {
+  primary: '#d7f5f5',
+}
+
 export const BaseInput = styled('input')({
   width: '100%',
   padding: 0,
@@ -10,6 +14,7 @@ export const BaseInput = styled('input')({
   background: 'none',
   backgroundColor: 'transparent',
   textAlign: 'center',
+  color: colors.primary,
 })
 
 export const TimeInput = React.memo((props) => {
@@ -32,7 +37,7 @@ export const TimeInput = React.memo((props) => {
       value={time}
       disabled={!!disabled}
       onChange={(event) => setTime(event.target.value)}
-      onBlur={(event) => changeState(This,event.target.value, index, valueIndex)}
+      onBlur={(event) => changeState(This, event.target.value, index, valueIndex)}
     />
   )
 })
