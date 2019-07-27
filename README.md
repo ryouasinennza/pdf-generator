@@ -10,4 +10,9 @@
 - `gulp buildFonts`
 
 #印鑑
+- http://www.hakusyu.com/download_insho.html などで画像としてダウンロードして
+- https://lab.syncer.jp/Tool/Base64-encode/ などでbase64に変換
 - base64に変換したものを inkan.jsに張り付けてください
+
+#保存
+- 保存には local storageを使っています
