@@ -184,13 +184,8 @@ class App extends Component {
               </Grid>
             )
           }
-
           return items
-
         })}
-
-        <div> 稼働時間 {this.state.total}</div>
-
       </AppContainer>
     )
   }
