@@ -3,6 +3,11 @@ import {total} from './Total'
 
 export const ChangeValue = (This, value, index, valueIndex) => {
   const list = This.state.list.slice()
+
+  if (!value) {
+    value = '00:00'
+  }
+
   list[index][valueIndex] = value
 
   if (index !== 0) {

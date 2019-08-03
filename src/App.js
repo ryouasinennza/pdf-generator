@@ -24,6 +24,15 @@ import {
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+const TYPES = [
+  'date',
+  'time',
+  'time',
+  'time',
+  'time',
+  'text',
+]
+
 class App extends Component {
 
   state = {
@@ -51,6 +60,7 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <AppContainer>
         <ButtonBox>
@@ -83,7 +93,7 @@ class App extends Component {
             label='Total Operating Time'
             type='text'
             value={this.state.total}
-            onChange={()=>console.log('Total')}
+            onChange={() => console.log('Total')}
             changeKey=''
           />
         </ButtonBox>
@@ -117,72 +127,22 @@ class App extends Component {
           } else {
             items = (
               <Grid key={index} focus={false}>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='date'
-                    index={index}
-                    valueIndex={0}
-                    timeValue={value[0]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='time'
-                    index={index}
-                    valueIndex={1}
-                    timeValue={value[1]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='time'
-                    index={index}
-                    valueIndex={2}
-                    timeValue={value[2]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='time'
-                    index={index}
-                    valueIndex={3}
-                    timeValue={value[3]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='time'
-                    index={index}
-                    valueIndex={4}
-                    disabled={true}
-                    timeValue={value[4]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
-                <GridItem>
-                  <TimeInput
-                    This={this}
-                    type='text'
-                    index={index}
-                    valueIndex={5}
-                    timeValue={value[5]}
-                    changeState={ChangeValue}
-                  />
-                </GridItem>
+                {TYPES.map((type, typeIndex) => (
+                  <GridItem key={typeIndex}>
+                    <TimeInput
+                      This={this}
+                      type={type}
+                      index={index}
+                      valueIndex={typeIndex}
+                      timeValue={value[typeIndex]}
+                      changeState={ChangeValue}
+                    />
+                  </GridItem>
+                ))}
                 <GridItem>
                   <DeleteButton onClick={() => Delete(this, index)}>delete</DeleteButton>
                 </GridItem>
-              </Grid>
-            )
+              </Grid>)
           }
           return items
         })}
