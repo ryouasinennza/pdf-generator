@@ -62,7 +62,8 @@ export const OutLineTextFiled = (props) => {
     value,
     onChange,
     changeKey,
-    disabled
+    disabled,
+    style
   } = props
   return (
     <CssTextField
@@ -71,6 +72,7 @@ export const OutLineTextFiled = (props) => {
       type={type}
       onChange={(event) => onChange ? onChange(changeKey, event.target.value) : null}
       className={classes.margin}
+      style={style ? style : {}}
       label={label}
       variant="outlined"
     />

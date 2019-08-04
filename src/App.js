@@ -93,6 +93,15 @@ class App extends Component {
             label='Total Operating Time'
             type='text'
             value={this.state.total}
+            style={{width: 160}}
+            changeKey=''
+          />
+          <OutLineTextFiled
+            disabled={true}
+            label='Working days'
+            type='text'
+            style={{width: 160}}
+            value={`${this.state.list.length - 1}日`}
             changeKey=''
           />
         </ButtonBox>
