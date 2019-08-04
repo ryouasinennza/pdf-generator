@@ -2,9 +2,10 @@ import moment from 'moment';
 import {total} from './Total'
 
 export const ChangeValue = (This, value, index, valueIndex) => {
-  const list = This.state.list.slice()
 
-  if (!value) {
+  const list = This.state.list.map((value) => value.slice())
+
+  if (!value && valueIndex !== 5) {
     value = '00:00'
   }
 
@@ -20,6 +21,6 @@ export const ChangeValue = (This, value, index, valueIndex) => {
 
   This.setState({
     list: list,
-    total: total(Array.from(list))
+    total: total(list)
   })
 }

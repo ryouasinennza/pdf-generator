@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 export const total = (list) => {
+
   let hour = 0
   let minute = 0
 

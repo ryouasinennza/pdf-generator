@@ -93,21 +93,20 @@ class App extends Component {
             label='Total Operating Time'
             type='text'
             value={this.state.total}
-            onChange={() => console.log('Total')}
             changeKey=''
           />
         </ButtonBox>
         <ButtonBox>
           <OutLineButton onClick={() => Download(
-            Array.from(this.state.list),
+            this.state.list,
             this.state.total,
             this.state.name,
             this.state.company,
             this.state.date,
             inkan,
           )}>Download</OutLineButton>
-          <OutLineButton onClick={() => Save(Array.from(this.state.list))}>Save</OutLineButton>
-          <OutLineButton onClick={() => Reed(this, Array.from(this.state.list))}>Read</OutLineButton>
+          <OutLineButton onClick={() => Save(this.state.list)}>Save</OutLineButton>
+          <OutLineButton onClick={() => Reed(this, this.state.list)}>Read</OutLineButton>
           <OutLineButton onClick={() => Add(this)}>Add</OutLineButton>
         </ButtonBox>
         {this.state.list.map((value, index) => {
@@ -150,6 +149,5 @@ class App extends Component {
     )
   }
 }
-
 
 export default App;

@@ -2,8 +2,9 @@ import moment from 'moment';
 import {total} from './Total'
 
 export const Add = (This) => {
+
   const list = [
-    ...This.state.list,
+    ...This.state.list.map((value) => value.slice()),
     [
       moment(new Date()).format('YYYY-MM-DD'),
       '10:00',
@@ -15,6 +16,6 @@ export const Add = (This) => {
   ]
   This.setState({
     list: list,
-    total: total(Array.from(list))
+    total: total(list)
   })
 }

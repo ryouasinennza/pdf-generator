@@ -69,7 +69,7 @@ export const OutLineTextFiled = (props) => {
       disabled={disabled}
       value={value}
       type={type}
-      onChange={(event) => onChange(changeKey, event.target.value)}
+      onChange={(event) => onChange ? onChange(changeKey, event.target.value) : null}
       className={classes.margin}
       label={label}
       variant="outlined"

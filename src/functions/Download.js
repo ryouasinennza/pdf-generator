@@ -15,6 +15,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
  */
 export const Download = (list, total, name, company, date, inkan,) => {
 
+  const newList = list.map((value) => value.slice())
+
   pdfMake.fonts = {
     GenYoMin: {
       normal: 'GenYoMinJP-Regular.ttf',
@@ -54,7 +56,7 @@ export const Download = (list, total, name, company, date, inkan,) => {
         table: {
           widths: ['*', '*', '*', '*', '*', '*'],
           headerRows: 1,
-          body: list
+          body: newList
         },
         layout: {
           fillColor: function (rowIndex, node, columnIndex) {

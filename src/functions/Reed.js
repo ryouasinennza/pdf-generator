@@ -14,9 +14,7 @@ export const Reed = (This, list) => {
 
     for (let i = 0; i < array.length; i++) {
       sixArray.push(array[i])
-      console.log('', i)
       if (((i + 1) % 6) === 0) {
-        console.log("new")
         newList[i2] = sixArray
         sixArray = []
         i2++
